@@ -10,6 +10,10 @@ import java.net.*;
  * @author Albert Vega Camacho
  */
 public class Cliente {
+    
+    /** 
+     * @param args
+     */
     public static void main(String [] args){
         VentanaCliente Ventana1 = new VentanaCliente();
     }
