@@ -114,7 +114,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
     }
 
     /**
-     * Esta clase gestiona la información que llegó del servidor
+     * Esta clase gestiona la información que llegó al cliente del servidor
      */
     public void run() {
         try{
