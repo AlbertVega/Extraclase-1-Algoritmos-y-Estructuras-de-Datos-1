@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.*;
 
 /**
@@ -35,7 +36,7 @@ class VentanaCliente extends JFrame {
 /**
  * Esta clase se encarga de gestionar los elementos dentro de la ventana creada
  */
-class LaminaMarcoCliente extends JPanel {
+class LaminaMarcoCliente extends JPanel implements Runnable{
     public LaminaMarcoCliente() {
         JLabel textotitulo = new JLabel("INDIQUE LOS VALORES DEL PRODUCTO"); 
         add(textotitulo);
@@ -57,12 +58,19 @@ class LaminaMarcoCliente extends JPanel {
 
         Boton1 = new JButton("ENVIAR");
 
+        EnviaTexto EventoObtenerTexto = new EnviaTexto();
+
+        Boton1.addActionListener(EventoObtenerTexto);
+
         add(Boton1);
 
         Campo_de_texto = new JTextArea(12,20);
 
         add(Campo_de_texto);
         
+        Thread Hilo2 = new Thread(this);
+
+        Hilo2.start();
     }
     private JTextField CampoTextoPrecio;
 
@@ -78,6 +86,18 @@ class LaminaMarcoCliente extends JPanel {
         public void actionPerformed(ActionEvent e){
             try {
                 Socket Socketcliente1 = new Socket("192.168.0.15", 878);
+                
+                Paquetes datos = new Paquetes();
+
+                datos.setPrecio(CampoTextoPrecio.getText());
+
+                datos.setPeso(CampoTextoPeso.getText());
+                
+                datos.setImpuesto(CampoTextoImpuesto.getText());
+
+                ObjectOutputStream paquete_de_datos = new ObjectOutputStream(Socketcliente1.getOutputStream());
+
+                paquete_de_datos.writeObject(datos);
 
                 Socketcliente1.close();
 
@@ -88,3 +108,66 @@ class LaminaMarcoCliente extends JPanel {
             }
         }
     }
+    public void run() {
+        try{
+            ServerSocket Socket_de_cliente = new ServerSocket(9090);
+            
+            Paquetes datos_recibidos_de_servidor = new Paquetes();
+
+            while(true){
+
+                Socket SocketAceptadorCliente = Socket_de_cliente.accept();
+
+                ObjectInputStream datos_de_entrada_cliente = new ObjectInputStream(SocketAceptadorCliente.getInputStream());
+
+                datos_recibidos_de_servidor = (Paquetes) datos_de_entrada_cliente.readObject();
+
+                String PrecioTemporal = datos_recibidos_de_servidor.getPrecio();
+                int preciofinal = Integer.parseInt(PrecioTemporal);
+
+                String PesoTemporal = datos_recibidos_de_servidor.getPeso();
+                int pesofinal = Integer.parseInt(PesoTemporal);
+
+                String ImpuestoTemporal = datos_recibidos_de_servidor.getImpuesto();
+                int impuestofinal = Integer.parseInt(ImpuestoTemporal);
+
+                Double MontoTemporal = ((preciofinal * impuestofinal)/100 ) + (pesofinal * (0.15));
+
+                String MontoFinal = String.valueOf(MontoTemporal);
+
+                Campo_de_texto.append("El monto final del producto es de " + MontoFinal+ "\n");
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+class Paquetes implements Serializable {
+    private String precio, peso, impuesto;
+
+    public String getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(String precio) {
+        this.precio = precio;
+    }
+
+    public String getPeso() {
+        return peso;
+    }
+
+    public void setPeso(String peso) {
+        this.peso = peso;
+    }
+
+    public String getImpuesto() {
+        return impuesto;
+    }
+
+    public void setImpuesto(String impuesto) {
+        this.impuesto = impuesto;
+    }
+}
