@@ -1,15 +1,26 @@
 import javax.swing.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.*;
 
-
+/**
+ * @author Albert Vega Camacho
+ */
 public class Cliente {
     public static void main(String [] args){
         VentanaCliente Ventana1 = new VentanaCliente();
     }
 }
 
+/**
+ * Esta clase es la encargada de manejar los atibutos de la ventana del cliente.
+ */
 class VentanaCliente extends JFrame {
     public VentanaCliente() {
-        setBounds(500, 300, 600, 300); //TAMAÑO
+
+        setBounds(500, 300, 600, 300); 
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //DETENER EL PROGRAMA CUANDO SE CIERRA LA VENTANA
 
@@ -21,6 +32,9 @@ class VentanaCliente extends JFrame {
     }
 }
 
+/**
+ * Esta clase se encarga de gestionar los elementos dentro de la ventana creada
+ */
 class LaminaMarcoCliente extends JPanel {
     public LaminaMarcoCliente() {
         JLabel textotitulo = new JLabel("INDIQUE LOS VALORES DEL PRODUCTO"); 
@@ -48,10 +62,8 @@ class LaminaMarcoCliente extends JPanel {
         Campo_de_texto = new JTextArea(12,20);
 
         add(Campo_de_texto);
-
         
     }
-
     private JTextField CampoTextoPrecio;
 
     private JTextField CampoTextoPeso;
@@ -61,4 +73,18 @@ class LaminaMarcoCliente extends JPanel {
     private JButton Boton1;
 
     private JTextArea Campo_de_texto;
-}
+
+    private class EnviaTexto implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            try {
+                Socket Socketcliente1 = new Socket("192.168.0.15", 878);
+
+                Socketcliente1.close();
+
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }
+    }
