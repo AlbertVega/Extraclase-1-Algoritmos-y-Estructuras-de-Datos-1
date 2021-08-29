@@ -83,6 +83,10 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
     private JTextArea Campo_de_texto;
 
     private class EnviaTexto implements ActionListener{
+        /**
+         * @param ActionEvent 
+         * Esta clase implementa lo que debe ocurrir cuando el parámetro (Evento:"presionar el botón") se le sea dado 
+         */
         public void actionPerformed(ActionEvent e){
             try {
                 Socket Socketcliente1 = new Socket("192.168.0.15", 878);
@@ -100,7 +104,7 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
                 paquete_de_datos.writeObject(datos);
 
                 Socketcliente1.close();
-
+            
             } catch (UnknownHostException e1) {
                 e1.printStackTrace();
             } catch (IOException e1) {
@@ -108,6 +112,10 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
             }
         }
     }
+
+    /**
+     * Esta clase gestiona la información que llegó del servidor
+     */
     public void run() {
         try{
             ServerSocket Socket_de_cliente = new ServerSocket(9090);
@@ -144,6 +152,9 @@ class LaminaMarcoCliente extends JPanel implements Runnable{
     }
 }
 
+/**
+ * Esta clase gestiona los datos que deben ser transportados (Precio, Peso e Impuesto)
+ */
 class Paquetes implements Serializable {
     private String precio, peso, impuesto;
 
