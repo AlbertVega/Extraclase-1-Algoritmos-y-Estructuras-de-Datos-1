@@ -9,6 +9,10 @@ import java.net.*;
  * @author Albert Vega Camacho
  */
 public class Servidor {
+    
+    /** 
+     * @param args
+     */
     public static void main(String [] args) {
         VentanaServidor Ventana2 = new VentanaServidor();
     }
